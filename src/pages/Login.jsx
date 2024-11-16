@@ -19,9 +19,16 @@ const Login = () => {
     try {
       const response = await axios.post('http://localhost:8000/api/login', formData);
       const { access_token } = response.data;
-      localStorage.setItem('token', access_token); // Menyimpan token di localStorage
+      localStorage.setItem('token', access_token); 
       alert('Login successful!');
-      navigate('/');  // Mengarahkan ke halaman utama setelah login berhasil
+
+      // kondisi kettika admin dan user login akan mengarahakan ke halaman yang berberbeda
+      if (response.data.user.role === 'admin') {
+        navigate('/dashboard'); 
+      } else {
+        navigate('/'); 
+      }
+      
     } catch (error) {
       console.error(error);
       alert('Login failed!');

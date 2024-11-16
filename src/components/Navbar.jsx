@@ -7,6 +7,7 @@ import { FaSearch } from "react-icons/fa";
 export default function Navbar() {
     // Mengecek apakah ada token di localStorage (mengindikasikan bahwa pengguna sudah login)
     const isLoggedIn = localStorage.getItem("token");
+    const userName = isLoggedIn ? localStorage.getItem("name") : "Guest";
 
     return (
         <div className="bg-white">
@@ -43,12 +44,18 @@ export default function Navbar() {
                         >
                             Blogs
                         </Link>
+                        
                     </div>
+                    
+                </div>
+                <div className="">
                 </div>
                 <div className="flex items-center space-x-4">
-                    <div className="flex space-x-4">
+                    {!isLoggedIn && (
+                        <div className="flex space-x-4">
                         <FaSearch className="text-gray-800 text-2xl" />
                     </div>
+                    )}
                     {/* Login Button */}
                     {!isLoggedIn && (
                         <Link
@@ -58,8 +65,13 @@ export default function Navbar() {
                             Login
                         </Link>
                     )}
-
-                    {/* Logout Button (optional, if needed) */}
+                    {/* Logout Button (optional, if needed) */}{" "}
+                    {isLoggedIn && (
+                        <div className="flex space-x-4">
+                            <FaSearch className="text-gray-800 text-2xl" />
+                            <FaCartShopping className="text-gray-800 text-2xl" />
+                        </div>
+                    )}
                     {isLoggedIn && (
                         <button
                             onClick={() => {
@@ -71,12 +83,6 @@ export default function Navbar() {
                         >
                             Logout
                         </button>
-                    )}
-                    {isLoggedIn && (
-                        <div className="flex space-x-4">
-                            <FaSearch className="text-gray-800 text-2xl" />
-                            <FaCartShopping className="text-gray-800 text-2xl" />
-                        </div>
                     )}
                 </div>
             </div>
