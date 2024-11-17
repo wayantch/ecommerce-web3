@@ -14,7 +14,7 @@ import Api from "../api/Api";
 
 const Homepage = () => {
   const isLoggedIn = localStorage.getItem("token");
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]); 
 
   const fetchProducts = async () => {
     try {

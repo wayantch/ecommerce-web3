@@ -8,7 +8,7 @@ const BuyProduct = () => {
   const [image, setImage] = useState("");
   const [price, setPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
-  const [discountOptions, setDiscountOptions] = useState([]); 
+  const [discountOptions, setDiscountOptions] = useState([]);
   const isLoggedIn = localStorage.getItem("token");
 
   if (!isLoggedIn) {
@@ -16,13 +16,17 @@ const BuyProduct = () => {
   }
 
   // Harga setelah diskon
-  const discountedPrice = Math.max(0, price - (price * discount) / 100);
+  const discountedPrice = Math.max(
+    0,
+    parseFloat(price) - (parseFloat(price) * parseFloat(discount)) / 100
+  );
 
   // Fetch data diskon
   const fetchDataDiscount = async () => {
     try {
       const response = await Api.get(`/api/discounts`); // Ambil data diskon
       const data = response.data.data; // Asumsikan data diskon dalam bentuk array
+      console.log(data);
       setDiscountOptions(data); // Menyimpan array diskon
     } catch (error) {
       console.error("Error fetching discount:", error);
@@ -41,7 +45,7 @@ const BuyProduct = () => {
 
       setName(data.name);
       setImage(data.image);
-      setPrice(data.price);
+      setPrice(parseFloat(data.price)); // Konversi harga menjadi angka
     } catch (error) {
       console.error("Error fetching product:", error);
     }
@@ -53,14 +57,16 @@ const BuyProduct = () => {
 
   // Fungsi untuk Membeli Produk
   const handleBuy = () => {
-    alert(`Produk ${name} berhasil dibeli dengan harga: Rp ${discountedPrice.toLocaleString()}`);
+    alert(
+      `Produk ${name} berhasil dibeli dengan harga: Rp ${discountedPrice.toLocaleString()}`
+    );
   };
 
-  // Handle perubahan diskon
   const handleDiscountChange = (event) => {
-    const selectedDiscount = parseInt(event.target.value, 10); // Ambil nilai diskon dari dropdown
+    const selectedDiscount = parseFloat(event.target.value); // Ambil nilai diskon (number)
     setDiscount(selectedDiscount); // Set diskon yang dipilih
   };
+  
 
   return (
     <div className="container mx-auto p-6">
@@ -78,22 +84,24 @@ const BuyProduct = () => {
         <div className="space-y-4">
           <h1 className="text-3xl font-bold text-gray-800">{name}</h1>
           <p className="text-xl text-gray-600">
-            Price: <span className="font-semibold">Rp {price.toLocaleString()}</span>
+            Price:{" "}
+            <span className="font-semibold">Rp {price.toLocaleString()}</span>
           </p>
 
           {/* Input Diskon */}
           <div>
-            <label htmlFor="discount" className="block text-sm font-semibold text-gray-700">
+            <label
+              htmlFor="discount"
+              className="block text-sm font-semibold text-gray-700">
               Use Voucher
             </label>
             <select
               id="discount"
               onChange={handleDiscountChange}
-              className="border border-gray-300 rounded-lg py-2 px-4 w-1/2 mt-2"
-            >
+              className="border border-gray-300 rounded-lg py-2 px-4 w-1/2 mt-2">
               <option value={0}>No Discount</option>
               {discountOptions.map((discountOption) => (
-                <option key={discountOption.id} value={discountOption.discount}>
+                <option key={discountOption.id} value={discountOption.number}>
                   {discountOption.code} - {discountOption.number}% Off
                 </option>
               ))}
@@ -111,9 +119,8 @@ const BuyProduct = () => {
           {/* Tombol Beli */}
           <button
             onClick={handleBuy}
-            className="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600"
-          >
-            But Now
+            className="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600">
+            Buy Now
           </button>
         </div>
       </div>
