@@ -63,7 +63,7 @@ const Discount = () => {
                 <tr key={discount.id} className="border-b hover:bg-gray-100">
                   <td className="px-4 py-3 text-sm text-gray-600">{index + 1}</td>
                   <td className="px-4 py-3 text-sm text-gray-600">{discount.code}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{discount.number}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">{discount.number} %</td>
                   <td className="px-4 py-3 text-center">
                     <button
 

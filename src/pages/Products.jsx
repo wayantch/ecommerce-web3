@@ -60,7 +60,7 @@ const Products = () => {
                 products.map((product, index) => (
                   <tr key={product.id} className="border-b hover:bg-gray-100">
                     <td className="px-4 py-3 text-sm text-gray-600">{index + 1}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{product.name}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 capitalize">{product.name}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">Rp {product.price}</td>
                     <td className="px-4 py-3 text-center">
                       <img

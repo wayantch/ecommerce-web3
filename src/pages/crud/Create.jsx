@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Create = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
+  const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();  // Correctly use useNavigate
+  const navigate = useNavigate();
 
   // Handle form submit
   const handleSubmit = async (e) => {
@@ -16,6 +17,7 @@ const Create = () => {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price);
+    formData.append('description', description);
     formData.append('image', image);
 
     try {
@@ -27,11 +29,11 @@ const Create = () => {
 
       if (response.status === 201) {
         setMessage('Product created successfully!');
-        navigate('/dashboard/products');  // Correct usage of navigate
+        navigate('/dashboard/products');
       }
     } catch (error) {
       setMessage('Error creating product. Please try again.');
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
   };
 
@@ -70,6 +72,22 @@ const Create = () => {
         </div>
 
         <div>
+          <label htmlFor="description" className="block text-sm font-semibold text-gray-700">
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            rows="4"
+            className="mt-2 p-2 w-full border rounded-md"
+            placeholder="Write a brief description about the product..."
+          ></textarea>
+        </div>
+
+        <div>
           <label htmlFor="image" className="block text-sm font-semibold text-gray-700">
             Product Image
           </label>
@@ -83,7 +101,13 @@ const Create = () => {
           />
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex gap-4">
+          <Link
+            to="/dashboard/products"
+            className="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600"
+          >
+            Cancel
+          </Link>
           <button
             type="submit"
             className="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600"

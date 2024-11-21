@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Api from '../../api/Api';
 
 const Edit = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
+  const [description, setDescription] = useState(''); // Tambahkan deskripsi
   const [image, setImage] = useState(null);
+  const [message, setMessage] = useState('');
   const [errors, setErrors] = useState('');
 
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ const Edit = () => {
       const response = await Api.get(`/api/products/${id}`);
       setName(response.data.name);
       setPrice(response.data.price);
+      setDescription(response.data.description); // Isi deskripsi jika ada
     } catch (error) {
       console.error('Error fetching product:', error);
     }
@@ -33,11 +36,13 @@ const Edit = () => {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price);
+    formData.append('description', description); // Tambahkan deskripsi
     if (image) formData.append('image', image);
     formData.append('_method', 'PUT'); // Gunakan PUT method
 
     try {
       await Api.post(`/api/products/${id}`, formData);
+      setMessage('Product updated successfully!');
       navigate('/dashboard/products');
     } catch (error) {
       console.error(error);
@@ -83,6 +88,22 @@ const Edit = () => {
           </div>
 
           <div>
+            <label htmlFor="description" className="block text-sm font-semibold text-gray-700">
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+              rows="4"
+              className="mt-2 p-2 w-full border rounded-md"
+              placeholder="Write a brief description about the product..."
+            ></textarea>
+          </div>
+
+          <div>
             <label htmlFor="image" className="block text-sm font-semibold text-gray-700">
               Product Image
             </label>
@@ -98,13 +119,25 @@ const Edit = () => {
             )}
           </div>
 
+          {message && (
+            <div className="text-green-500 text-sm mt-2">
+              {message}
+            </div>
+          )}
+
           {errors && (
             <div className="text-red-500 text-sm mt-2">
               {errors}
             </div>
           )}
 
-          <div className="flex items-center justify-between">
+          <div className="flex gap-4">
+            <Link
+              to="/dashboard/products"
+              className="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600"
+            >
+              Cancel
+            </Link>
             <button
               type="submit"
               className="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600"

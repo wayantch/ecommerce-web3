@@ -11,16 +11,29 @@ import Watch from "../assets/category/watch.png";
 import { Link } from "react-router-dom";
 
 import Api from "../api/Api";
+import { FaCartPlus } from "react-icons/fa6";
+import { useCart } from "../context/CartContext";
 
 const Homepage = () => {
   const isLoggedIn = localStorage.getItem("token");
-  const [products, setProducts] = useState([]); 
+  const [products, setProducts] = useState([]);
+  const { addToCart } = useCart();
+  const [readMore, setReadMore] = useState(false);
+
+  const addToCartButton = (product) => {
+    addToCart(product);
+    // console.log(product);
+  };
+
+  const toggleReadMore = () => {
+    setReadMore(!readMore);
+  };
 
   const fetchProducts = async () => {
     try {
       const response = await Api.get("/api/products");
       setProducts(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -32,7 +45,7 @@ const Homepage = () => {
 
   return (
     <>
-      <div className="container">
+      <div className="container mt-24">
         {/* Hero Section */}
         <div className="w-full h-[80vh] bg-gray-300 rounded-3xl relative flex flex-col justify-center">
           <div className="p-10 flex flex-col justify-center items-start">
@@ -53,7 +66,7 @@ const Homepage = () => {
         </div>
 
         {/* Category Section */}
-        <div className="grid grid-cols-4 grid-rows-2 gap-10 my-10">
+        <div className="grid grid-cols-4 grid-rows-2 gap-10 my-5">
           <div className="w-full h-80 bg-brandYellow rounded-3xl shadow-lg relative flex items-center">
             <div className="p-5">
               <p className="text-lg font-semibold text-gray-700">Enjoy</p>
@@ -234,18 +247,37 @@ const Homepage = () => {
                 alt={product.name}
                 className="w-full h-54 object-cover rounded-lg "
               />
-              <h2 className="text-xl font-semibold mt-4">{product.name}</h2>
-              <p className="text-lg text-gray-700 my-2">Rp. {product.price}</p>
+              <h2 className="text-xl font-semibold mt-4 capitalize">{product.name}</h2>
+              <p className="text-lg text-gray-700 my-2">$ {product.price}</p>
+              <p >
+                {readMore ? product.description : product.description.slice(0, 100)}
+                {product.description.length > 100 && !readMore && '...'}
+                <button onClick={toggleReadMore} className=" text-gray-700 my-2">
+                  {readMore ? 'Read Less' : 'Read More'}
+                </button>
+              </p>
               {!isLoggedIn && (
                 <button className="flex gap-2 rounded-lg bg-primary p-2 text-white hover:text-black transition duration-300">
                   <Link to="/login">Buy Now</Link>
                 </button>
               )}
-              {isLoggedIn && (
-                <button className="flex gap-2 rounded-lg bg-primary p-2 text-white hover:text-black transition duration-300">
-                  <Link to={`/product_detail/${product.id}`}>Buy Now</Link>
-                </button>
-              )}
+              <div className="flex gap-2">
+                {isLoggedIn && (
+                  <button className="flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-white ">
+                    <button
+                      className="flex items-center justify-center gap-2"
+                      onClick={addToCart} // Increment the cart count when clicked
+                    >
+                      Add Cart <FaCartPlus />
+                    </button>
+                  </button>
+                )}
+                {isLoggedIn && (
+                  <button className="flex gap-2 rounded-lg bg-primary px-4 py-2 text-white ">
+                    <Link to={`/product_detail/${product.id}`}>Buy Now</Link>
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>

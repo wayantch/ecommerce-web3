@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Api from "../api/Api";
+import { FaArrowDown } from "react-icons/fa6";
+import { FaArrowLeft } from "react-icons/fa";
 
 const BuyProduct = () => {
   const { id } = useParams(); // Ambil ID dari URL
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
   const [price, setPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
@@ -44,6 +47,7 @@ const BuyProduct = () => {
       const data = response.data;
 
       setName(data.name);
+      setDescription(data.description);
       setImage(data.image);
       setPrice(parseFloat(data.price)); // Konversi harga menjadi angka
     } catch (error) {
@@ -66,18 +70,23 @@ const BuyProduct = () => {
     const selectedDiscount = parseFloat(event.target.value); // Ambil nilai diskon (number)
     setDiscount(selectedDiscount); // Set diskon yang dipilih
   };
-  
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto mt-24">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Bagian Kiri: Gambar Produk */}
-        <div className="flex justify-center">
+        <div className="relative">
           <img
             src={image || "https://via.placeholder.com/400"}
             alt={name}
             className="rounded-lg shadow-lg"
           />
+          <Link to="/">
+            <FaArrowLeft
+              className="absolute top-4 left-4 text-gray-600"
+              size={24}
+            />
+          </Link>
         </div>
 
         {/* Bagian Kanan: Detail Produk */}
@@ -86,6 +95,9 @@ const BuyProduct = () => {
           <p className="text-xl text-gray-600">
             Price:{" "}
             <span className="font-semibold">Rp {price.toLocaleString()}</span>
+          </p>
+          <p className="text-xl text-gray-600">
+            <span className="">{description}</span>
           </p>
 
           {/* Input Diskon */}
